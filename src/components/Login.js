@@ -74,11 +74,6 @@ function Login() {
                 size="lg"
               />
 
-              <p className="small mb-3 pb-lg-2">
-                <a className="text-white-50" href="#!">
-                  Forgot password?
-                </a>
-              </p>
 
               <MDBBtn
                 color="light"
@@ -96,15 +91,6 @@ function Login() {
               >
                 Login
               </MDBBtn>
-
-              <div>
-                <p className="mb-0">
-                  Don't have an account?{" "}
-                  <a href="signup" className="text-white-50 fw-bold">
-                    Sign Up
-                  </a>
-                </p>
-              </div>
             </MDBCardBody>
           </MDBCard>
         </MDBCol>
