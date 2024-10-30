@@ -17,14 +17,17 @@ function Upload() {
   const [uploadedImages, setUploadedImages] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
   const location = useLocation();
   const userId = location.state?.userId || 345;
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const files = Array.from(event.target.files);
-
-    setSelectedFiles(files.slice(0, 1)); 
+    setSelectedFiles(files.slice(0, 1)); // Allow only one file
+    console.log(files);
+    setUploading(true);
+    // await handleFileUploadClick(files.slice(0, 1)); // Automatically trigger upload
   };
 
   const handleSubmit = async (event) => {
@@ -47,7 +50,7 @@ function Upload() {
       const response = await getRecommendation(userId);
       const data = await response.json();
       if (data && data.final_recc) {
-        setRecommendations(data.final_recc); // Save the final_recc array to state
+        setRecommendations(data.final_recc); 
       } else {
         console.error("Unexpected data format:", data);
       }
@@ -79,6 +82,8 @@ function Upload() {
       fetchUploadedImages(userId);
     } catch (error) {
       console.error("Error uploading files:", error);
+    }  finally {
+      setUploading(false); // Reset uploading status
     }
   };
 
@@ -119,7 +124,6 @@ function Upload() {
               </h2>
 
               <form onSubmit={handleSubmit} className="w-100">
-                {/* Select Files Button */}
                 <div className="mb-4 d-flex flex-column flex-md-row justify-content-center">
                   <input
                     type="file"
@@ -138,7 +142,7 @@ function Upload() {
                         borderRadius: "50px",
                         backgroundColor: "#82c4f4",
                         transition: "background-color 0.3s ease",
-                        minWidth: "150px", // Ensure buttons have a minimum width
+                        minWidth: "150px",
                       }}
                       onMouseEnter={(e) =>
                         (e.target.style.backgroundColor = "#6db3e5")
@@ -179,9 +183,9 @@ function Upload() {
                       style={{
                         borderRadius: "50px",
                         transition: "background-color 0.3s ease",
-                        minWidth: "150px", // Ensure buttons have a minimum width
+                        minWidth: "150px",
                       }}
-                      disabled={loading} // Disable button while loading
+                      disabled={loading}
                     >
                       {loading ? (
                         <div
@@ -199,6 +203,13 @@ function Upload() {
                     </MDBBtn>
                   </div>
                 </div>
+                {selectedFiles.length > 0 && (
+                  <p className="text-center mb-3">
+                    {uploading
+                      ? `Uploading ${selectedFiles[0].name}...`
+                      : `File ${selectedFiles[0].name} uploaded successfully.`}
+                  </p>
+                )}
               </form>
             </MDBCardBody>
           </MDBCard>
